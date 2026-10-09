@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>临床思维训练室 · 文字演练</title>
+  <link rel="stylesheet" href="/ui/zh-chest/style.css?v=rx-native-3">
+  <link rel="preload" as="image" href="./assets/patient-scenes-v1.png">
+  <link rel="preload" as="image" href="./assets/cath-lab-v1.png">
+  <script src="/ui/zh-chest/app.js?v=rx-native-3" defer></script>
+</head>
+<body><style>
+#clinical-language-bar{position:static;display:flex;justify-content:flex-end;box-sizing:border-box;width:100%;max-width:1500px;margin:0 auto;padding:12px;clear:both;color-scheme:light}
+#clinical-language-bar #clinical-language-switch{position:static!important;inset:auto!important;float:none!important;transform:none!important;display:flex;flex-wrap:wrap;gap:4px;padding:5px;border:1px solid #b7cbcd;border-radius:10px;background:#fff;box-shadow:0 2px 12px #1232;font:14px system-ui;direction:ltr}
+#clinical-language-switch a{display:block;padding:8px 14px;color:#174d52;text-decoration:none;border-radius:6px;white-space:nowrap}
+#clinical-language-switch a[aria-current="page"]{background:#e5f3f1;font-weight:600}
+#clinical-language-switch a:focus-visible{outline:2px solid #116c60;outline-offset:2px}
+body:has(.hx-language) #clinical-language-bar{display:none!important}
+#clinical-language-bar{display:none!important}
+#clinical-roles .hx-mast{flex-wrap:wrap}
+#clinical-roles .hx-brand{min-width:0;overflow-wrap:anywhere}
+#clinical-roles .hx-language{display:flex;position:static!important;gap:4px;margin-left:auto;padding:5px;border:1px solid #b7cbcd;border-radius:10px;background:#fff;flex-shrink:0;align-self:center}
+#clinical-roles .hx-language a{display:block;padding:8px 14px;color:#174d52;text-decoration:none;border-radius:6px;font:14px system-ui;white-space:nowrap}
+#clinical-roles .hx-language a[aria-current="page"]{background:#e5f3f1;font-weight:600}
+#clinical-roles .hx-columns{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);box-sizing:border-box;max-width:1500px;width:100%;margin-left:auto;margin-right:auto}
+#clinical-roles .hx-photo{min-height:0!important;aspect-ratio:942 / 710;align-self:start}
+#clinical-roles .hx-photo img{position:absolute!important;width:168.153%!important;height:auto!important;max-width:none!important;left:-3.7155%!important;top:-20.5634%!important}
+#clinical-roles .hx-card{min-width:0;box-sizing:border-box}
+@media(max-width:700px){#clinical-roles .hx-columns{grid-template-columns:minmax(0,1fr)}#clinical-roles .hx-language{margin-left:auto}}
+</style><div id="clinical-language-bar"><nav id="clinical-language-switch" aria-label="Language / 语言">
+<a href="/portal.html?ui=language-v3" lang="zh-CN" aria-current="page">中文 · 中文版</a>
+<a href="/en/portal.html?ui=language-v3" lang="en" >English · 英文版</a></nav></div>
+<script>(()=>{const current="zh";document.querySelectorAll('#clinical-language-switch a').forEach(a=>a.addEventListener('click',e=>{if(a.lang===(current==='en'?'en':'zh-CN')){e.preventDefault();return}if(location.pathname.includes('/training/')&&!confirm(current==='en'?'Switch language and return to the learning platform? Your saved practice is retained. Unsent text will not be transferred.':'切换语言并返回学习平台？已保存的练习会保留，尚未发送的文字不会转移。'))e.preventDefault()}));})();</script>
+<div id="clinical-rounds" aria-label="临床思维训练界面">
+  <header class="top">
+    <div><h1 class="brand">临床思维训练室 <span class="tag">文字演练</span></h1><div class="muted">胸痛患者 · 接诊医生视角</div></div>
+    <div class="row"><button id="cr-flow-toggle" data-action="flow" aria-controls="cr-flow-panel" aria-expanded="false">训练流程</button><button id="cr-teacher-top" data-action="teacher">请教上级医师</button><span id="cr-mode" class="tag"></span><button data-action="export">导出记录</button><button data-action="new">新建演练</button></div>
+  </header>
+  <section id="cr-flow-panel" class="flow-panel hidden" role="dialog" aria-label="训练流程"><div class="heading"><h2>训练流程</h2><button data-action="close-flow" aria-label="收起训练流程">✕</button></div><nav aria-label="训练进程"></nav><p class="muted">按顺序推进，可回看已完成的场景。</p></section>
+  <div id="cr-error" class="error hidden" role="alert"></div>
+  <div id="cr-review" class="review-banner hidden"></div>
+  <main aria-label="问诊与病历工作台"><p class="muted">正在恢复本次演练…</p></main>
+  <footer class="footer"><div><span id="cr-status" class="muted" role="status">正在连接本地演练…</span><div class="muted">教学模拟病例 · 待专家审核 · 检查即时返回，本轮不评分</div></div><button class="primary" id="cr-next" disabled>进入处置与交接 →</button></footer>
+  <dialog id="cr-dialog" aria-labelledby="cr-dialog-title"><section class="dialog"><div class="heading"><h2 id="cr-dialog-title"></h2><button data-action="close" aria-label="关闭弹窗">✕</button></div><div id="cr-dialog-body"></div></section></dialog>
+</div>
+</body>
+</html>

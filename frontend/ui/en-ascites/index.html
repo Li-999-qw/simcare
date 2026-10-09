@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>消化内科临床思维训练室 · 文字演练</title>
+  <link rel="stylesheet" href="/ui/en-ascites/style.css?v=rx-native-3">
+  <link rel="preload" as="image" href="./assets/patient-scenes-v1.png">
+
+  <script src="/ui/en-ascites/app.js?v=rx-native-3" defer></script>
+<style>/* Longer English labels must wrap without separating medication fields. */
+/* Keep the complete input toolbar in the flex layout. English prompts can
+   occupy more lines than Chinese; only the transcript should shrink first. */
+html[lang=en] #clinical-rounds .conversation{min-height:0}
+html[lang=en] #clinical-rounds .conversation>.pad{overflow-y:auto;overscroll-behavior:contain}
+html[lang=en] #clinical-rounds .composer{flex:0 0 auto;min-width:0}
+html[lang=en] #clinical-rounds .conversation>.pad>.heading,
+html[lang=en] #clinical-rounds .conversation>.pad>.busy-state{flex-shrink:0}
+html[lang=en] #clinical-rounds .conversation .chat-log{min-height:64px}
+html[lang=en] #clinical-rounds .composer .row{row-gap:8px}
+html[lang=en] #clinical-rounds .composer [data-voice],
+html[lang=en] #clinical-rounds .composer [data-send]{flex-shrink:0;white-space:nowrap}
+@media(min-width:701px){html[lang=en] #clinical-rounds .conversation button.scene-picture{height:clamp(80px,12vh,120px)}}
+@media(min-width:701px) and (min-height:741px){html[lang=en] #clinical-rounds main{grid-template-rows:minmax(0,1fr)}}
+@media(max-height:740px),(max-width:700px){html[lang=en] #clinical-rounds .conversation{align-self:start}html[lang=en] #clinical-rounds .conversation .chat-log{flex:none;height:96px;max-height:180px}}
+html[lang=en] #clinical-rounds #cr-senior-log{height:clamp(96px,24dvh,220px);min-height:96px;max-height:220px;flex:none}
+html[lang=en] button,html[lang=en] .tab{white-space:normal;line-height:1.35}
+html[lang=en] .report-meta{grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:9px 16px}
+html[lang=en] .report-paper th,html[lang=en] .report-paper td{overflow-wrap:anywhere;vertical-align:top}
+html[lang=en] .report-paper th{line-height:1.35}
+html[lang=en] .composer .row{flex-wrap:wrap}
+html[lang=en] input,html[lang=en] select,html[lang=en] textarea{min-width:0}
+html[lang=en] .rx-table{min-width:1120px}
+html[lang=en] .hx-login h1{font-size:clamp(26px,3vw,44px);line-height:1.15;max-width:650px}
+html[lang=en] .hx-login{overflow-wrap:break-word}
+html[lang=en] .hx-photo{background:#17384a}
+html[lang=en] .hx-photo img{clip-path:inset(0 0 25% 0)}
+html[lang=en] .hx-photo::after{content:'Practice clinical reasoning in realistic encounters.\A History · Examination · Diagnosis · Management · Debrief';white-space:pre-line;position:absolute;bottom:0;left:0;right:0;min-height:27%;box-sizing:border-box;padding:24px;color:white;background:#17384a;font:500 22px/1.5 system-ui;display:flex;align-items:center}
+html[lang=en] h1,html[lang=en] h2,html[lang=en] h3{overflow-wrap:break-word}
+#clinical-language-switch [aria-current=page]{background:#e1f0ee;border-radius:6px;font-weight:700}
+@media(max-width:700px){html[lang=en] .report-meta{grid-template-columns:1fr 1fr}#clinical-language-switch{right:8px!important;bottom:8px!important}}
+</style></head>
+<body><style>
+#clinical-language-bar{position:static;display:flex;justify-content:flex-end;box-sizing:border-box;width:100%;max-width:1500px;margin:0 auto;padding:12px;clear:both;color-scheme:light}
+#clinical-language-bar #clinical-language-switch{position:static!important;inset:auto!important;float:none!important;transform:none!important;display:flex;flex-wrap:wrap;gap:4px;padding:5px;border:1px solid #b7cbcd;border-radius:10px;background:#fff;box-shadow:0 2px 12px #1232;font:14px system-ui;direction:ltr}
+#clinical-language-switch a{display:block;padding:8px 14px;color:#174d52;text-decoration:none;border-radius:6px;white-space:nowrap}
+#clinical-language-switch a[aria-current="page"]{background:#e5f3f1;font-weight:600}
+#clinical-language-switch a:focus-visible{outline:2px solid #116c60;outline-offset:2px}
+body:has(.hx-language) #clinical-language-bar{display:none!important}
+#clinical-language-bar{display:none!important}
+#clinical-roles .hx-mast{flex-wrap:wrap}
+#clinical-roles .hx-brand{min-width:0;overflow-wrap:anywhere}
+#clinical-roles .hx-language{display:flex;position:static!important;gap:4px;margin-left:auto;padding:5px;border:1px solid #b7cbcd;border-radius:10px;background:#fff;flex-shrink:0;align-self:center}
+#clinical-roles .hx-language a{display:block;padding:8px 14px;color:#174d52;text-decoration:none;border-radius:6px;font:14px system-ui;white-space:nowrap}
+#clinical-roles .hx-language a[aria-current="page"]{background:#e5f3f1;font-weight:600}
+#clinical-roles .hx-columns{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);box-sizing:border-box;max-width:1500px;width:100%;margin-left:auto;margin-right:auto}
+#clinical-roles .hx-photo{min-height:0!important;aspect-ratio:942 / 710;align-self:start}
+#clinical-roles .hx-photo img{position:absolute!important;width:168.153%!important;height:auto!important;max-width:none!important;left:-3.7155%!important;top:-20.5634%!important}
+#clinical-roles .hx-card{min-width:0;box-sizing:border-box}
+@media(max-width:700px){#clinical-roles .hx-columns{grid-template-columns:minmax(0,1fr)}#clinical-roles .hx-language{margin-left:auto}}
+</style><div id="clinical-language-bar"><nav id="clinical-language-switch" aria-label="Language / 语言">
+<a href="/portal.html?ui=language-v3" lang="zh-CN" >中文 · 中文版</a>
+<a href="/en/portal.html?ui=language-v3" lang="en" aria-current="page">English · 英文版</a></nav></div>
+<script>(()=>{const current="en";document.querySelectorAll('#clinical-language-switch a').forEach(a=>a.addEventListener('click',e=>{if(a.lang===(current==='en'?'en':'zh-CN')){e.preventDefault();return}if(location.pathname.includes('/training/')&&!confirm(current==='en'?'Switch language and return to the learning platform? Your saved practice is retained. Unsent text will not be transferred.':'切换语言并返回学习平台？已保存的练习会保留，尚未发送的文字不会转移。'))e.preventDefault()}));})();</script>
+<div id="clinical-rounds" aria-label="临床思维训练界面">
+  <header class="top">
+    <div><h1 class="brand">消化内科临床思维训练室 <span class="tag">文字演练</span></h1><div class="muted">腹胀患者 · 接诊医生视角</div></div>
+    <div class="row"><button id="cr-flow-toggle" data-action="flow" aria-controls="cr-flow-panel" aria-expanded="false">训练流程</button><button id="cr-teacher-top" data-action="teacher">请教上级医师</button><span id="cr-mode" class="tag"></span><button data-action="export">导出记录</button><button data-action="new">新建演练</button></div>
+  </header>
+  <section id="cr-flow-panel" class="flow-panel hidden" role="dialog" aria-label="训练流程"><div class="heading"><h2>训练流程</h2><button data-action="close-flow" aria-label="收起训练流程">✕</button></div><nav aria-label="训练进程"></nav><p class="muted">按顺序推进，可回看已完成的场景。</p></section>
+  <div id="cr-error" class="error hidden" role="alert"></div>
+  <div id="cr-review" class="review-banner hidden"></div>
+  <main aria-label="问诊与病历工作台"><p class="muted">正在恢复本次演练…</p></main>
+  <footer class="footer"><div><span id="cr-status" class="muted" role="status">正在连接本地演练…</span><div class="muted">教学模拟病例 · 待专家审核 · 检查按病程时间返回，本轮不评分</div></div><button class="primary" id="cr-next" disabled>进入处置与交接 →</button></footer>
+  <dialog id="cr-dialog" aria-labelledby="cr-dialog-title"><section class="dialog"><div class="heading"><h2 id="cr-dialog-title"></h2><button data-action="close" aria-label="关闭弹窗">✕</button></div><div id="cr-dialog-body"></div></section></dialog>
+</div>
+</body>
+</html>
+<script src="/en/shared-ui.js"></script>
