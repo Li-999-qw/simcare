@@ -2,22 +2,23 @@
 $ErrorActionPreference='Stop'
 $root=$PSScriptRoot
 if($root -match '[^\x00-\x7F]'){throw 'Extract to an English path, e.g. C:\SimCare.'}
-[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
-$python=Join-Path $root 'runtime/python/python.exe'
-if(-not(Test-Path $python)){
- New-Item -ItemType Directory -Force "$root/runtime" | Out-Null
- $installer="$root/runtime/python-installer.exe"
- Invoke-WebRequest 'https://www.python.org/ftp/python/3.12.10/python-3.12.10-amd64.exe' -OutFile $installer -UseBasicParsing
- $sig=Get-AuthenticodeSignature -LiteralPath $installer
- if($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch 'Python Software Foundation'){throw 'Python installer signature verification failed'}
- $p=Start-Process -FilePath $installer -ArgumentList @('/quiet','InstallAllUsers=0','Include_launcher=0','Include_test=0','PrependPath=0',('TargetDir="'+$root+'\runtime\python"')) -WindowStyle Hidden -Wait -PassThru
- if($p.ExitCode -notin @(0,3010)){throw 'Python installation failed'}
+$conda=Get-Command conda -ErrorAction SilentlyContinue
+if(-not $conda){throw 'Conda was not found. Add conda to PATH or run this script from an Anaconda PowerShell Prompt.'}
+$envPath=Join-Path $root '.conda-env'
+$python=Join-Path $envPath 'python.exe'
+if((Test-Path -LiteralPath $envPath) -and -not(Test-Path -LiteralPath $python)){
+ throw 'Incomplete Conda environment at .conda-env. Remove that directory after checking it, then rerun Install.ps1.'
 }
-& $python -m venv "$root/.venv"
-if($LASTEXITCODE -ne 0){throw 'Could not create virtual environment'}
-$python="$root/.venv/Scripts/python.exe"
-& $python -m pip install -r "$root/requirements.txt"
-if($LASTEXITCODE -ne 0){throw 'Dependency installation failed; check outbound Internet connectivity'}
+if(Test-Path -LiteralPath $python){
+ & conda env update --prefix $envPath --file (Join-Path $root 'environment.yml') --prune
+}else{
+ & conda env create --prefix $envPath --file (Join-Path $root 'environment.yml')
+}
+if($LASTEXITCODE -ne 0){throw 'Conda dependency installation failed; check the Conda output and network connectivity'}
+if(-not(Test-Path -LiteralPath $python)){throw 'Conda completed without creating python.exe'}
+$env:PATH="$envPath;$envPath\Scripts;$envPath\Library\bin;$env:PATH"
+& $python -c 'import fastapi, httpx, numpy, onnxruntime, PIL, sherpa_onnx, sqlalchemy, uvicorn, websockets'
+if($LASTEXITCODE -ne 0){throw 'A required Python dependency could not be imported'}
 & $python "$root/initialize.py"
 if($LASTEXITCODE -ne 0){throw 'Initialization failed'}
 & $python "$root/create_admin.py"

@@ -2,8 +2,10 @@
 $ErrorActionPreference='Stop'
 $root=$PSScriptRoot
 if($root -match '[^\x00-\x7F]'){throw 'Use an English installation path, e.g. C:\SimCare'}
-$python="$root/.venv/Scripts/python.exe"
-if(-not(Test-Path $python)){throw 'Run Install.ps1 first'}
+$python=Join-Path $root '.conda-env/python.exe'
+if(-not(Test-Path $python)){throw 'Run Install.ps1 first to create the Conda environment'}
+$envPath=Split-Path -Parent $python
+$env:PATH="$envPath;$envPath\Scripts;$envPath\Library\bin;$env:PATH"
 foreach($file in @('certs/server.pem','certs/server-key.pem')){if(-not(Test-Path "$root/$file")){throw "Missing domain certificate file: $file"}}
 & $python "$root/configure_nginx.py"
 if($LASTEXITCODE -ne 0){throw 'Certificate/configuration validation failed'}
@@ -15,7 +17,9 @@ function Launch([string]$Name,[int]$Port,[string[]]$Arguments){
  $listener=Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
  if($listener){
   $owner=Get-CimInstance Win32_Process -Filter "ProcessId=$($listener[0].OwningProcess)"
-  if($owner.CommandLine -notlike ('*'+$root+'*')){throw "Port $Port is occupied by another application"}
+  if($owner.ExecutablePath -ne $python -or $owner.CommandLine -notlike ('*'+$root+'*')){
+   throw "Port $Port is occupied by another application or an older Python environment. Run Stop.ps1 before starting."
+  }
   Write-Host "$Name already running";return
  }
  $p=Start-Process -FilePath $python -ArgumentList $Arguments -WorkingDirectory $root -WindowStyle Hidden -PassThru -RedirectStandardOutput "$root/logs/$Name.log" -RedirectStandardError "$root/logs/$Name.err"

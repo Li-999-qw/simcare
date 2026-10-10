@@ -2,12 +2,14 @@ param([switch]$NoBrowser)
 
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
-$python = Join-Path $root '.venv\Scripts\python.exe'
+$python = Join-Path $root '.conda-env\python.exe'
 $nginx = Join-Path $root 'nginx\nginx.exe'
 $nginxPrefix = (Join-Path $root 'nginx').Replace('\', '/') + '/'
 $ports = @(28765, 28770, 28771, 28894, 28891, 28892, 28893, 28876, 8080)
 
 if (-not (Test-Path -LiteralPath $python)) { throw 'Run Install.ps1 first.' }
+$envPath = Split-Path -Parent $python
+$env:PATH = "$envPath;$envPath\Scripts;$envPath\Library\bin;$env:PATH"
 if (-not (Test-Path -LiteralPath $nginx)) { throw 'Nginx is missing.' }
 if (-not (Test-Path -LiteralPath (Join-Path $root 'nginx\conf\local-preview.conf'))) {
     throw 'Local preview configuration is missing.'
@@ -27,10 +29,17 @@ function Wait-ForPort([int]$port, [bool]$listening, [int]$seconds) {
 }
 
 # Refuse to stop a service from another installation or application.
-$pythonPrefix = '"' + $python + '"'
+$pythonPrefixes = @('"' + $python + '"', '"' + (Join-Path $root '.venv\Scripts\python.exe') + '"')
+function Test-OwnedPythonCommand([string]$commandLine) {
+    if (-not $commandLine) { return $false }
+    foreach ($prefix in $pythonPrefixes) {
+        if ($commandLine.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase)) { return $true }
+    }
+    return $false
+}
 $ownedPython = @(Get-CimInstance Win32_Process | Where-Object {
     $_.Name -in @('python.exe', 'pythonw.exe') -and
-    $_.CommandLine.StartsWith($pythonPrefix, [StringComparison]::OrdinalIgnoreCase) -and
+    (Test-OwnedPythonCommand $_.CommandLine) -and
     $_.CommandLine -match '(?:engine_runner\.py|backend[/\\]engines[/\\]|backend[/\\]extensions[/\\]english[/\\]site[/\\]|server\.py)'
 })
 $ownedNginx = @(Get-CimInstance Win32_Process | Where-Object {
